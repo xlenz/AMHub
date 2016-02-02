@@ -59,12 +59,12 @@ net.createServer(function (socket) {
   });
   // error event
   socket.on('error', function (err) {
-    process.stderr.write('TCP proxy error: ');
+    process.stderr.write('\nTCP proxy error: \n');
     process.stderr.write(err.stack);
   });
   // close connection event
   socket.on('end', function (end) {
-    process.stderr.write('TCP proxy disconnected');
+    process.stderr.write('\nTCP proxy disconnected\n');
   });
 }).listen(PROXY_PORT, function () {
   console.log('TCP proxy listening at %s port', PROXY_PORT);
@@ -123,7 +123,7 @@ server.listen(80, function () {
 });
 
 process.on('uncaughtException', function(err) {
-    process.stderr.write("uncaughtException");
+    process.stderr.write("\nuncaughtException\n");
     process.stderr.write(err.stack);
     process.exit();
 });
