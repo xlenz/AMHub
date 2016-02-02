@@ -10,6 +10,7 @@ module.exports = function ( grunt ) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-ng-annotate');
+  grunt.loadNpmTasks('grunt-html2js');
 
   /**
    * Load in our build configuration file.
@@ -135,6 +136,8 @@ module.exports = function ( grunt ) {
           '<%= vendor_files.js %>', 
           'module.prefix', 
           '<%= build_dir %>/src/**/*.js', 
+          '<%= html2js.common.dest %>',
+          '<%= html2js.app.dest %>',
           'module.suffix' 
         ],
         dest: '<%= compile_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.js'
@@ -181,6 +184,30 @@ module.exports = function ( grunt ) {
       }
     },
 
+    html2js: {
+      /**
+       * These are the templates from `src/app`.
+       */
+      app: {
+        options: {
+          base: 'src/app'
+        },
+        src: [ '<%= app_files.atpl %>' ],
+        dest: '<%= build_dir %>/templates-app.js'
+      },
+
+      /**
+       * These are the templates from `src/common`.
+       */
+      common: {
+        options: {
+          base: 'src/common'
+        },
+        src: [ '<%= app_files.ctpl %>' ],
+        dest: '<%= build_dir %>/templates-common.js'
+      }
+    },
+
     /**
      * The `index` task compiles the `index.html` file as a Grunt template. CSS
      * and JS files co-exist here but they get split apart later.
@@ -198,6 +225,8 @@ module.exports = function ( grunt ) {
         src: [
           '<%= vendor_files.js %>',
           '<%= build_dir %>/src/**/*.js',
+          '<%= html2js.common.dest %>',
+          '<%= html2js.app.dest %>',
           '<%= vendor_files.css %>',
           '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
         ]
@@ -288,7 +317,8 @@ module.exports = function ( grunt ) {
         files: [ 
           '<%= app_files.atpl %>', 
           '<%= app_files.ctpl %>'
-        ]
+        ],
+        tasks: [ 'html2js' ]
       },
 
       /**
@@ -322,7 +352,7 @@ module.exports = function ( grunt ) {
    * The `build` task gets your app ready to run for development and testing.
    */
   grunt.registerTask( 'build', [
-    'clean', 'less:build',
+    'clean', 'html2js', 'less:build',
     'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
     'copy:build_appjs', 'copy:build_vendorjs', 'copy:build_vendorcss', 'index:build'
   ]);
@@ -332,7 +362,7 @@ module.exports = function ( grunt ) {
    * minifying your code.
    */
   grunt.registerTask( 'compile', [
-    'less:compile', 'copy:compile_assets', 'ngAnnotate', 'concat:compile_js', 'index:compile', 'clean:build'
+    'less:compile', 'copy:compile_assets', 'ngAnnotate', 'concat:compile_js', 'index:compile'
   ]);
 
   /**
