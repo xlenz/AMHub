@@ -9,7 +9,7 @@ var net = require('net');
 
 // config
 var fs = require('fs')
-var configFile = 'server/config.json'
+var configFile = __dirname + '/config.json'
 var config = JSON.parse(fs.readFileSync(configFile));
 
 var PROXY_PORT = config.PROXY_PORT;
