@@ -7,8 +7,13 @@
 */
 var net = require('net');
 
-var PROXY_PORT = 8000;
-var DOCKER_SOCKET = '/docker.sock';
+// config
+var fs = require('fs')
+var configFile = 'server/config.json'
+var config = JSON.parse(fs.readFileSync(configFile));
+
+var PROXY_PORT = config.PROXY_PORT;
+var DOCKER_SOCKET = config.DOCKER_SOCKET;
 
 // create tcp server
 net.createServer(function (socket) {
@@ -54,13 +59,12 @@ net.createServer(function (socket) {
   });
   // error event
   socket.on('error', function (err) {
-    console.log('TCP proxy error: ');
-    console.log(err.stack);
-    socket.end();
+    log('TCP proxy error: ');
+    log(err.stack);
   });
   // close connection event
   socket.on('end', function (end) {
-    console.log('TCP proxy disconnected');
+    log('TCP proxy disconnected');
   });
 }).listen(PROXY_PORT, function () {
   console.log('TCP proxy listening at %s port', PROXY_PORT);
@@ -78,10 +82,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 var router = express.Router();
-// config
-var fs = require('fs')
-var configFile = 'server/config.json'
-var config = JSON.parse(fs.readFileSync(configFile));
+// routes
 router.route('/config')
   .get(function (req, res) {
     res.json(config);
@@ -112,7 +113,7 @@ app.use('/api', router);
 // redirect everything to index.html
 var path = require('path');
 app.use(express.static(path.resolve(__dirname, '../build')));
-app.get('*', function (req, res) {
+app.get('/', function (req, res) {
   res.sendFile(path.resolve(__dirname, '../build', 'index.html'));
 });
 

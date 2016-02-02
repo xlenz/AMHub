@@ -1,4 +1,6 @@
 {
+    "PROXY_PORT": 8000,
+    "DOCKER_SOCKET": '/var/run/docker.sock',
     "addresses": [],
     "docker": true
 }
