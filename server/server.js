@@ -112,9 +112,9 @@ app.use('/api', router);
 
 // redirect everything to index.html
 var path = require('path');
-app.use(express.static(path.resolve(__dirname, '../build')));
+app.use(express.static(path.resolve(__dirname, '../bin')));
 app.get('/', function (req, res) {
-  res.sendFile(path.resolve(__dirname, '../build', 'index.html'));
+  res.sendFile(path.resolve(__dirname, '../bin', 'index.html'));
 });
 
 server.listen(80, function () {
