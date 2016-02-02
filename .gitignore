@@ -1,0 +1,6 @@
+node_modules/
+build/
+bin/
+vendor/
+!vendor/FileSaver
+!vendor/smoothScroll
