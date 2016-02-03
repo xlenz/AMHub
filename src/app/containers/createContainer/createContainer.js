@@ -46,19 +46,26 @@ angular.module( 'app.createContainer', [
 
   $scope.settings = Cookies.settings;
   $scope.hostVolumes = [];
-  $scope.limits = {
-    memory: '1.5',
-    swap: '0',
-    cpu: '50'
-  };
+  $scope.environmentVariables = [];
+
+  //commented this to avoid confusion
+  // $scope.limits = {
+  //   memory: '1.5',
+  //   swap: '0',
+  //   cpu: '50'
+  // };
 
   Image.get({ id: imageName }, function( image ) {
     $scope.image = image;
     $scope.bindingPorts = image.Config.ExposedPorts;
+    $scope.environmentVariables = image.Config.Env;
+
+    //remove PATH from environment variables. May be a dirty hack
+    if ($scope.environmentVariables[0].indexOf("PATH=") === 0) $scope.environmentVariables.splice(0, 1);
   });
 
   Config.get({}, function( config ) {
-    $scope.config = config;  
+    $scope.config = config;
   });
 
   $scope.env = Env.get({});
@@ -80,23 +87,30 @@ angular.module( 'app.createContainer', [
       bindingVolumes.push('/var/run/docker.sock:/var/run/docker.sock');
       bindingVolumes.push($scope.env.DOCKER + ':/bin/docker');
     }
+
+    removeBadEnvironmentVariables();
+
     Container.create({
       Image: imageName,
       name: $scope.name,
+      env: $scope.environmentVariables,
       Hostname: $scope.name//,
       //Memory: $scope.limits.memory*1073741824,
       //MemorySwap: $scope.limits.swap//,
       //CpuShares: 1024*$scope.limits.cpu/100
     }, function( created ) {
-      Container.start({ 
-        id: created.Id, 
-        PublishAllPorts: true,
-        Binds: bindingVolumes,
-        PortBindings: getPortBindings($scope.bindingPorts),
-        RestartPolicy: $scope.restartPolicy.value   
-      }, function() {
-        console.log('Container created and started.');
-      });
+      console.log('Container created.');
+      if ( $scope.config.startContainersAfterCreation ) {
+        Container.start({ 
+          id: created.Id, 
+          PublishAllPorts: true,
+          Binds: bindingVolumes,
+          PortBindings: getPortBindings($scope.bindingPorts),
+          RestartPolicy: $scope.restartPolicy.value   
+        }, function() {
+          console.log('Container started.');
+        });
+      }
       // close after creation
       $scope.$close();
     });
@@ -109,6 +123,16 @@ angular.module( 'app.createContainer', [
       data[i] = arr;
     }
     return data;
+  };
+
+  var removeBadEnvironmentVariables = function() {
+    var i = $scope.environmentVariables.length;
+    while (i--) {
+      var element = $scope.environmentVariables[i];
+      if (element === undefined || element === null || element.indexOf("=") === -1) {
+        $scope.environmentVariables.splice(i, 1);
+      }
+    }
   };
 
   $scope.close = function() {

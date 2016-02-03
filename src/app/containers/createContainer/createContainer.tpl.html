@@ -10,6 +10,11 @@
         <input type="text" class="form-control" id="name" 
         placeholder="Enter name" ng-model="name">
       </div>
+      <label for="environmentVariables" class="col-lg-3 control-label">Environment Variables</label>
+      <div class="col-lg-9"> 
+        <textarea class="form-control" id="environmentVariables" 
+        placeholder="var1=val1&#10;var2=val2" ng-model="environmentVariables" ng-trim="false" ng-list="&#10;" rows="9"></textarea>
+      </div>
     </div>
     <div class="form-group" ng-if="settings.advanced && image.Config.Volumes">
       <label for="name" class="col-lg-3 control-label">Binding Volumes</label>
@@ -19,8 +24,8 @@
             <table class="table">
               <thead>
                 <tr>
-                  <th class="col-lg-6">Host</th>
-                  <th>Container</th>
+                  <th class="col-lg-9">Host</th>
+                  <th class="col-lg-3">Container</th>
                 </tr>
               </thead>
               <tbody>
