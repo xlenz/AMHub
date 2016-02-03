@@ -5,7 +5,7 @@ angular.module( 'cookies', [
 .factory( 'Cookies', function( $cookieStore, $location ) {
   // default settings
   var settings = {
-    advanced: false,
+    advanced: true,
     filter: ''
   };
 
