@@ -47,9 +47,14 @@ net.createServer(function (socket) {
     });
     // error event
     serviceSocket.on('error', function (err) {
-      console.log('Docker server error: ');
-      console.log(err.stack);
-      socket.end();
+      process.stderr.write('\nDocker server error: \n');
+      process.stderr.write(err.stack);
+
+      //temporary workaround of EMFILE error. Just restart server
+      if (err.stack.includes("Error: connect EMFILE")) {
+        process.stderr.write('\nEMFILE error. Throwing uncaughtException.\n');
+        throw new Error ("uncaughtException");
+      }
     });
     // close connection event
     serviceSocket.on('end', function (end) {
