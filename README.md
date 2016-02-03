@@ -1,6 +1,3 @@
-[![Join the chat at https://gitter.im/alex-agency/AMHub](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/alex-agency/AMHub?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status][travis-image]][travis-url]
-[![Test Coverage][coveralls-image]][coveralls-url]
 
 Application Manager Docker Hub
 ===============================
@@ -78,7 +75,3 @@ In case if you using docker-machine, create new docker machine and use its ip-ad
 
   [MIT](LICENSE)
 
-[travis-image]: https://travis-ci.org/alex-agency/AMHub.svg?style=flat
-[travis-url]: https://travis-ci.org/alex-agency/AMHub
-[coveralls-image]: https://img.shields.io/coveralls/alex-agency/AMHub.svg?style=flat
-[coveralls-url]: https://coveralls.io/r/alex-agency/AMHub?branch=master
