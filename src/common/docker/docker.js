@@ -48,7 +48,7 @@ angular.module( 'docker', ['ngResource'] )
     // GET /containers/(id)/top
     top: { method: 'GET', params:{ id: '@id', action: 'top' } },
     // POST /containers/create
-    create: { method: 'POST', params:{ name: '@name', action: 'create' } }, 
+    create: { method: 'POST', params:{ name: '@name', env: '@env', action: 'create' } }, 
     // POST /containers/(id)/start
     start: { method: 'POST', params:{ id: '@id', action: 'start' } }, 
     // POST /containers/(id)/stop
