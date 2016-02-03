@@ -99,6 +99,18 @@
         </div>
       </div>
     </div>
+    <div class="form-group" ng-if="settings.advanced">
+      <label class="col-lg-2 control-label">Container</label>
+      <div class="col-lg-10">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" ng-model="config.startContainersAfterCreation" 
+              ng-change="saveConfig()" ng-model-options="{debounce:1000}">
+            Autostart after creation
+          </label>
+        </div>
+      </div>
+    </div>
   </form>
 </div>
 <div class="modal-footer">
