@@ -47,7 +47,6 @@ angular.module( 'app.createContainer', [
   $scope.settings = Cookies.settings;
   $scope.hostVolumes = [];
   $scope.environmentVariables = [];
-  $scope.net = null;
 
   //commented this to avoid confusion
   // $scope.limits = {
@@ -58,29 +57,17 @@ angular.module( 'app.createContainer', [
 
   Config.get({}, function( config ) {
     $scope.config = config;
-    $scope.net = $scope.config.network.default.net;
+  });
 
-    Image.get({ id: imageName }, function( image ) {
+  Image.get({ id: imageName }, function( image ) {
       $scope.image = image;
       $scope.environmentVariables = image.Config.Env;
 
-      var imageNameSpl = imageName.substr(imageName.indexOf('/') + 1);
-      $scope.config.network.dhcp.mask.forEach(function (element, index, array) {
-        if (imageName.startsWith(element) || imageNameSpl.startsWith(element)) {
-          $scope.net = $scope.config.network.dhcp.net;
-        }
-      });
-
       //remove PATH from environment variables. May be a dirty hack
       if ($scope.environmentVariables[0].indexOf("PATH=") === 0) $scope.environmentVariables.splice(0, 1);
-    });
   });
 
   $scope.env = Env.get({});
-
-  $scope.restartPolicy = {
-    value: {}
-  };
 
   $scope.create = function() {
     var bindingVolumes = [];
@@ -106,12 +93,6 @@ angular.module( 'app.createContainer', [
       //MemorySwap: $scope.limits.swap//,
       //CpuShares: 1024*$scope.limits.cpu/100
     };
-
-    if ($scope.net !== null) {
-      createContainerParams.net = $scope.net;
-    } else if ($scope.net !== 'host') {
-      createContainerParams.Hostname = $scope.name;
-    }
 
     Container.create(createContainerParams, function( created ) {
       console.log('Container created.');

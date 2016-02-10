@@ -43,65 +43,26 @@ angular.module( 'app.startContainer', [
   function StartContainerCtrl( $scope, $stateParams, Cookies, ContainerService, Container, Config ) {
 
   $scope.settings = Cookies.settings;
-  $scope.isDhcp = false;
 
   ContainerService.getByName( decodeURIComponent($stateParams.name) )
     .then(function( container ) {
       Container.get({ id: container.Id }, function( info ) {
         $scope.container = info;
-        $scope.bindingPorts = info.Config.ExposedPorts;
-
-        Config.get({}, function( config ) {
-          $scope.net = config.network.default.net;
-
-          var imageName = info.Config.Image;
-          var imageNameSpl = imageName.substr(imageName.indexOf('/') + 1);
-          config.network.dhcp.mask.forEach(function (element, index, array) {
-            if (imageName.startsWith(element) || imageNameSpl.startsWith(element)) {
-              $scope.net = config.network.dhcp.net;
-              $scope.isDhcp = true;
-            }
-          });
-        });
-
       });
   });
-
-  $scope.restartPolicy = {
-    value: {}
-  };
 
   $scope.start = function() {
 
     var startContainerParams = {
       id: $scope.container.Id,
-//      RestartPolicy: $scope.restartPolicy.value,
       privileged: true
     };
-
-    if (!$scope.isDhcp) {
-//      startContainerParams.PublishAllPorts = true;
-//      startContainerParams.PortBindings = getPortBindings($scope.bindingPorts);
-    }
-
-    if ($scope.net !== null) {
-      startContainerParams.net = $scope.net;
-    }
 
     Container.start(startContainerParams, function() {
       console.log('Container started.');
       ContainerService.update();
       $scope.$close();
     });
-  };
-
-  var getPortBindings = function( data ) {
-    for(var i in data) {
-      var arr = [];
-      arr.push(data[i]);
-      data[i] = arr;
-    }
-    return data;
   };
 
   $scope.close = function() {
