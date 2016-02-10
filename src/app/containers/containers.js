@@ -42,7 +42,7 @@ angular.module( 'app.containers', [
 })
 
 .service( 'ContainerService', 
-  function ( $rootScope, $q, Cookies, Config, Container ) {
+  function ( $rootScope, $q, Cookies, Config, Container, ContainerService ) {
   var self = this;
 
   this.init = function() {

@@ -75,13 +75,13 @@ angular.module( 'app.startContainer', [
 
     var startContainerParams = {
       id: $scope.container.Id,
-      RestartPolicy: $scope.restartPolicy.value,
+//      RestartPolicy: $scope.restartPolicy.value,
       privileged: true
     };
 
     if (!$scope.isDhcp) {
-      startContainerParams.PublishAllPorts = true;
-      startContainerParams.PortBindings = getPortBindings($scope.bindingPorts);
+//      startContainerParams.PublishAllPorts = true;
+//      startContainerParams.PortBindings = getPortBindings($scope.bindingPorts);
     }
 
     if ($scope.net !== null) {
