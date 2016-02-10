@@ -9,7 +9,7 @@
             "mask": ["relay-", "server-", "dhcp-"]
         },
         "default": {
-            "net": "docker0"
+            "net": "host"
         }
     }
 }

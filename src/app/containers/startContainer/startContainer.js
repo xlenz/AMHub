@@ -49,6 +49,19 @@ angular.module( 'app.startContainer', [
       Container.get({ id: container.Id }, function( info ) {
         $scope.container = info;
         $scope.bindingPorts = info.Config.ExposedPorts;
+
+        Config.get({}, function( config ) {
+          $scope.net = config.network.default.net;
+
+          var imaneName = info.Config.Image;
+          var imageNameSpl = imageName.substr(imageName.indexOf('/') + 1);
+          config.network.dhcp.mask.forEach(function (element, index, array) {
+            if (imageName.startsWith(element) || imageNameSpl.startsWith(element)) {
+              $scope.net = config.network.dhcp.net;
+            }
+          });
+        });
+
       });
   });
 
@@ -56,14 +69,23 @@ angular.module( 'app.startContainer', [
     value: {}
   };
 
-  $scope.start = function() {
-    Container.start({
+  var startContainerParams = {
       id: $scope.container.Id,
-      PublishAllPorts: true,
-      PortBindings: getPortBindings($scope.bindingPorts),
       RestartPolicy: $scope.restartPolicy.value,
       privileged: true
-    }, function() {
+  };
+
+  if (!isDhcp) {
+      startContainerParams.PublishAllPorts = true;
+      startContainerParams.PortBindings = getPortBindings($scope.bindingPorts);
+  }
+
+  if ($scope.net !== null) {
+      startContainerParams.net = $scope.net;
+  }
+
+  $scope.start = function() {
+    Container.start(startContainerParams, function() {
       console.log('Container started.');
       $scope.$close();
     });
