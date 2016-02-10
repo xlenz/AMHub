@@ -101,8 +101,7 @@ angular.module( 'app.createContainer', [
     var createContainerParams = {
       Image: imageName,
       name: $scope.name,
-      env: $scope.environmentVariables,
-      Hostname: $scope.name//,
+      env: $scope.environmentVariables
       //Memory: $scope.limits.memory*1073741824,
       //MemorySwap: $scope.limits.swap//,
       //CpuShares: 1024*$scope.limits.cpu/100
@@ -110,6 +109,8 @@ angular.module( 'app.createContainer', [
 
     if ($scope.net !== null) {
       createContainerParams.net = $scope.net;
+    } else if ($scope.net !== 'host') {
+      createContainerParams.Hostname = $scope.name;
     }
 
     Container.create(createContainerParams, function( created ) {
