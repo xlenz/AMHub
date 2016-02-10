@@ -88,7 +88,8 @@ angular.module( 'app.createContainer', [
     var createContainerParams = {
       Image: imageName,
       name: $scope.name,
-      env: $scope.environmentVariables
+      env: $scope.environmentVariables,
+      Hostname: $scope.name
       //Memory: $scope.limits.memory*1073741824,
       //MemorySwap: $scope.limits.swap//,
       //CpuShares: 1024*$scope.limits.cpu/100
