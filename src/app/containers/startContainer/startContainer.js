@@ -53,7 +53,7 @@ angular.module( 'app.startContainer', [
         Config.get({}, function( config ) {
           $scope.net = config.network.default.net;
 
-          var imaneName = info.Config.Image;
+          var imageName = info.Config.Image;
           var imageNameSpl = imageName.substr(imageName.indexOf('/') + 1);
           config.network.dhcp.mask.forEach(function (element, index, array) {
             if (imageName.startsWith(element) || imageNameSpl.startsWith(element)) {
