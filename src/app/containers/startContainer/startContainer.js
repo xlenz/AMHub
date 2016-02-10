@@ -40,7 +40,7 @@ angular.module( 'app.startContainer', [
 })
 
 .controller( 'StartContainerCtrl', 
-  function StartContainerCtrl( $scope, $stateParams, Cookies, ContainerService, Container ) {
+  function StartContainerCtrl( $scope, $stateParams, Cookies, ContainerService, Container, Config ) {
 
   $scope.settings = Cookies.settings;
 
@@ -87,6 +87,7 @@ angular.module( 'app.startContainer', [
   $scope.start = function() {
     Container.start(startContainerParams, function() {
       console.log('Container started.');
+      ContainerService.update();
       $scope.$close();
     });
   };

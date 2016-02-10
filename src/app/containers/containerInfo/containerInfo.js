@@ -32,6 +32,7 @@ angular.module( 'app.containerInfo', [
         ContainerService.getByName( decodeURIComponent($stateParams.name) )
           .then(function( container ) {
             Container.stop({ id: container.Id }, function() {
+              ContainerService.update();
               console.log('Container stoped.');
             });
         });

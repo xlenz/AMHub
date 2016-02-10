@@ -37,7 +37,9 @@ angular.module( 'app.removeContainer', [
   });
   
   $scope.remove = function() {
-    ContainerService.remove( $scope.container.Id ); 
+    ContainerService.remove( $scope.container.Id, function () {
+      ContainerService.update();
+    } );
     $scope.$close();
   };
 
