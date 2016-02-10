@@ -69,22 +69,23 @@ angular.module( 'app.startContainer', [
     value: {}
   };
 
-  var startContainerParams = {
+  $scope.start = function() {
+
+    var startContainerParams = {
       id: $scope.container.Id,
       RestartPolicy: $scope.restartPolicy.value,
       privileged: true
-  };
+    };
 
-  if (!isDhcp) {
+    if (!isDhcp) {
       startContainerParams.PublishAllPorts = true;
       startContainerParams.PortBindings = getPortBindings($scope.bindingPorts);
-  }
+    }
 
-  if ($scope.net !== null) {
+    if ($scope.net !== null) {
       startContainerParams.net = $scope.net;
-  }
+    }
 
-  $scope.start = function() {
     Container.start(startContainerParams, function() {
       console.log('Container started.');
       ContainerService.update();
