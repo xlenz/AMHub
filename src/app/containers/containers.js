@@ -42,7 +42,7 @@ angular.module( 'app.containers', [
 })
 
 .service( 'ContainerService', 
-  function ( $rootScope, $q, Cookies, Config, Container, ContainerService ) {
+  function ( $rootScope, $q, Cookies, Config, Container ) {
   var self = this;
 
   this.init = function() {
@@ -151,7 +151,7 @@ angular.module( 'app.containers', [
       console.log('Container killed.');
       return Container.remove({ id: id }, function() {
         console.log('Container removed.');
-        ContainerService.update();
+        this.update();
       });
     });
   };
