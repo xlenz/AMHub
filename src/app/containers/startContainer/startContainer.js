@@ -43,6 +43,7 @@ angular.module( 'app.startContainer', [
   function StartContainerCtrl( $scope, $stateParams, Cookies, ContainerService, Container, Config ) {
 
   $scope.settings = Cookies.settings;
+  $scope.isDhcp = false;
 
   ContainerService.getByName( decodeURIComponent($stateParams.name) )
     .then(function( container ) {
@@ -58,6 +59,7 @@ angular.module( 'app.startContainer', [
           config.network.dhcp.mask.forEach(function (element, index, array) {
             if (imageName.startsWith(element) || imageNameSpl.startsWith(element)) {
               $scope.net = config.network.dhcp.net;
+              $scope.isDhcp = true;
             }
           });
         });
@@ -77,7 +79,7 @@ angular.module( 'app.startContainer', [
       privileged: true
     };
 
-    if (!isDhcp) {
+    if (!$scope.isDhcp) {
       startContainerParams.PublishAllPorts = true;
       startContainerParams.PortBindings = getPortBindings($scope.bindingPorts);
     }
