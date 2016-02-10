@@ -40,13 +40,14 @@ angular.module( 'app.createContainer', [
 })
 
 .controller( 'CreateContainerCtrl', 
-  function CreateContainerCtrl( $scope, $rootScope, $stateParams, Cookies, Config, Image, Container, Env ) {
+  function CreateContainerCtrl( $scope, $rootScope, $stateParams, Cookies, Config, Image, Container, Env, ContainerService ) {
 
   var imageName = decodeURIComponent($stateParams.name);
 
   $scope.settings = Cookies.settings;
   $scope.hostVolumes = [];
   $scope.environmentVariables = [];
+  $scope.net = null;
 
   //commented this to avoid confusion
   // $scope.limits = {
@@ -55,17 +56,25 @@ angular.module( 'app.createContainer', [
   //   cpu: '50'
   // };
 
-  Image.get({ id: imageName }, function( image ) {
-    $scope.image = image;
-    $scope.bindingPorts = image.Config.ExposedPorts;
-    $scope.environmentVariables = image.Config.Env;
-
-    //remove PATH from environment variables. May be a dirty hack
-    if ($scope.environmentVariables[0].indexOf("PATH=") === 0) $scope.environmentVariables.splice(0, 1);
-  });
-
   Config.get({}, function( config ) {
     $scope.config = config;
+    $scope.net = $scope.config.network.default.net;
+
+    Image.get({ id: imageName }, function( image ) {
+      $scope.image = image;
+      $scope.environmentVariables = image.Config.Env;
+
+      var imageNameSpl = imageName.substr(imageName.indexOf('/') + 1);
+      $scope.config.network.dhcp.mask.forEach(function (element, index, array) {
+        if (imageName.startsWith(element) || imageNameSpl.startsWith(element)) {
+          $scope.net = $scope.config.network.dhcp.net;
+          break;
+        }
+      });
+
+      //remove PATH from environment variables. May be a dirty hack
+      if ($scope.environmentVariables[0].indexOf("PATH=") === 0) $scope.environmentVariables.splice(0, 1);
+    });
   });
 
   $scope.env = Env.get({});
@@ -90,7 +99,7 @@ angular.module( 'app.createContainer', [
 
     removeBadEnvironmentVariables();
 
-    Container.create({
+    var createContainerParams = {
       Image: imageName,
       name: $scope.name,
       env: $scope.environmentVariables,
@@ -98,31 +107,18 @@ angular.module( 'app.createContainer', [
       //Memory: $scope.limits.memory*1073741824,
       //MemorySwap: $scope.limits.swap//,
       //CpuShares: 1024*$scope.limits.cpu/100
-    }, function( created ) {
+    };
+
+    if ($scope.net !== null) {
+      createContainerParams.net = $scope.net;
+    }
+
+    Container.create(createContainerParams, function( created ) {
       console.log('Container created.');
-      if ( $scope.config.startContainersAfterCreation ) {
-        Container.start({ 
-          id: created.Id, 
-          PublishAllPorts: true,
-          Binds: bindingVolumes,
-          PortBindings: getPortBindings($scope.bindingPorts),
-          RestartPolicy: $scope.restartPolicy.value   
-        }, function() {
-          console.log('Container started.');
-        });
-      }
+      ContainerService.update();
       // close after creation
       $scope.$close();
     });
-  };
-
-  var getPortBindings = function( data ) {
-    for(var i in data) {
-      var arr = [];
-      arr.push(data[i]);
-      data[i] = arr;
-    }
-    return data;
   };
 
   var removeBadEnvironmentVariables = function() {

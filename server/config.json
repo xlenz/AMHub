@@ -3,5 +3,13 @@
     "DOCKER_SOCKET": "/var/run/docker.sock",
     "addresses": [],
     "docker": false,
-    "startContainersAfterCreation": false
+    "network": {
+        "dhcp": {
+            "net": null,
+            "mask": ["relay-", "server-", "dhcp-"]
+        },
+        "default": {
+            "net": "docker0"
+        }
+    }
 }
