@@ -68,7 +68,6 @@ angular.module( 'app.createContainer', [
       $scope.config.network.dhcp.mask.forEach(function (element, index, array) {
         if (imageName.startsWith(element) || imageNameSpl.startsWith(element)) {
           $scope.net = $scope.config.network.dhcp.net;
-          break;
         }
       });
 
