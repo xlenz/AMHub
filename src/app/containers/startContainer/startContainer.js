@@ -57,11 +57,12 @@ angular.module( 'app.startContainer', [
   };
 
   $scope.start = function() {
-    Container.start({ 
-      id: $scope.container.Id, 
+    Container.start({
+      id: $scope.container.Id,
       PublishAllPorts: true,
       PortBindings: getPortBindings($scope.bindingPorts),
-      RestartPolicy: $scope.restartPolicy.value   
+      RestartPolicy: $scope.restartPolicy.value,
+      privileged: true
     }, function() {
       console.log('Container started.');
       $scope.$close();
