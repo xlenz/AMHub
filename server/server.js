@@ -1,79 +1,9 @@
-/*
-  This proxy translate TCP to Unix domain sockets 
-  For check Unix domain socket use: 
-    echo -e "GET /info HTTP/1.1\r\n" | nc -U /var/run/docker.sock
-  For check TCP socket use:
-    curl -s -XGET http://<PROXY_HOST>:<PROXY_PORT>/info
-*/
 var net = require('net');
 
 // config
 var fs = require('fs')
 var configFile = __dirname + '/config.json'
 var config = JSON.parse(fs.readFileSync(configFile));
-
-var PROXY_PORT = config.PROXY_PORT;
-var DOCKER_SOCKET = config.DOCKER_SOCKET;
-
-// create tcp server
-net.createServer(function (socket) {
-  // get msg request from tcp client
-  socket.on('data', function (msg) {
-    // define CORS header
-    var headerCORS = "\r\nAccess-Control-Allow-Headers: Content-Type" +
-      "\r\nAccess-Control-Allow-Methods: GET, POST, DELETE" +
-      "\r\nAccess-Control-Allow-Origin: *";
-    // resolve CORS prefligth request
-    if(msg.toString().indexOf("OPTIONS") === 0) {
-      socket.end("HTTP/1.1 200 OK" +
-        headerCORS +
-        "\r\nAccess-Control-Max-Age: 1728000");
-      return;
-    }
-    // create connection to unix server
-    var serviceSocket = new net.Socket();
-    serviceSocket.connect(DOCKER_SOCKET, function () {
-      // when connection established write msg responce to unix server
-      serviceSocket.write(msg);
-    });
-    // get data request from unix server
-    serviceSocket.on('data', function (data) {
-      // modify header to enable CORS
-      var separator = '\r\n\r\n';
-      headerCORS += separator;
-      data = data.toString().replace(separator, headerCORS);
-      // write tcp response
-      socket.write(data.toString());
-    });
-    // error event
-    serviceSocket.on('error', function (err) {
-      process.stderr.write('\nDocker server error: \n');
-      process.stderr.write(err.stack);
-
-      //temporary workaround of EMFILE error. Just restart server
-      if (err.stack.includes("Error: connect EMFILE")) {
-        process.stderr.write('\nEMFILE error. Throwing uncaughtException.\n');
-        throw new Error ("uncaughtException");
-      }
-    });
-    // close connection event
-    serviceSocket.on('end', function (end) {
-      console.log('Docker server disconnected');
-      socket.end();
-    });
-  });
-  // error event
-  socket.on('error', function (err) {
-    process.stderr.write('\nTCP proxy error: \n');
-    process.stderr.write(err.stack);
-  });
-  // close connection event
-  socket.on('end', function (end) {
-    process.stderr.write('\nTCP proxy disconnected\n');
-  });
-}).listen(PROXY_PORT, function () {
-  console.log('TCP proxy listening at %s port', PROXY_PORT);
-});
 
 /*
   Web server 
@@ -119,7 +49,7 @@ app.use('/api', router);
 var path = require('path');
 app.use(express.static(path.resolve(__dirname, '../bin')));
 app.get('/', function (req, res) {
-  res.sendFile(path.resolve(__dirname, '../bin', 'index.html'));
+  res.redirect('/index.html');
 });
 
 server.listen(80, function () {
