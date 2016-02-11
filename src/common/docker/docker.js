@@ -2,9 +2,11 @@
 angular.module( 'docker', ['ngResource'] )
  
 .factory( 'Settings', function( $location ) {
-  var api = '/v1.19';
+  var api = 'v1.22';
+  var DOCKER_HOST = $location.host();
+  var DOCKER_PORT = '8000';
   // url to proxy server
-  var url = 'http://' + $location.host() + ':8000' + api;
+  var url = 'http://' + DOCKER_HOST + ':' + DOCKER_PORT + '/' + api;
   return {
     url: url
   };
