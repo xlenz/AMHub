@@ -147,13 +147,13 @@ angular.module( 'app.containers', [
   }; 
 
   this.remove = function( id ) {
-    return Container.kill({ id: id }, function() {
-      console.log('Container killed.');
+    //return Container.kill({ id: id }, function() {
+      //console.log('Container killed.');
       return Container.remove({ id: id }, function() {
         console.log('Container removed.');
         self.update();
       });
-    });
+    //});
   };
 
   this.getAllByImage = function( imageName ) {
