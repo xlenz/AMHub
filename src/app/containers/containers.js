@@ -22,8 +22,8 @@ angular.module( 'app.containers', [
   function ContainersCtrl( $scope, $modal, $interval, Cookies, ContainerService, ImageService ) {
 
   $scope.settings = Cookies.settings;
-  $scope.searchThreshold = 10;
-  $scope.viewLimit = 10;
+  $scope.searchThreshold = 30;
+  $scope.viewLimit = 30;
   $scope.sort = '-Created';
 
   $scope.update = function() {
