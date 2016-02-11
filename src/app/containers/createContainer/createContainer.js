@@ -64,7 +64,9 @@ angular.module( 'app.createContainer', [
       $scope.environmentVariables = image.Config.Env;
 
       //remove PATH from environment variables. May be a dirty hack
-      if ($scope.environmentVariables.length > 0 && $scope.environmentVariables[0].indexOf("PATH=") === 0) $scope.environmentVariables.splice(0, 1);
+      if ($scope.environmentVariables !== null && $scope.environmentVariables.length > 0 && $scope.environmentVariables[0].indexOf("PATH=") === 0) {
+        $scope.environmentVariables.splice(0, 1);
+      }
   });
 
   $scope.env = Env.get({});
@@ -104,6 +106,9 @@ angular.module( 'app.createContainer', [
   };
 
   var removeBadEnvironmentVariables = function() {
+    if ($scope.environmentVariables === null || $scope.environmentVariables.length === 0) {
+      return;
+    }
     var i = $scope.environmentVariables.length;
     while (i--) {
       var element = $scope.environmentVariables[i];
