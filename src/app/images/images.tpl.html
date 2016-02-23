@@ -1,10 +1,8 @@
-<div class="page-header">
+<div>
   <div class="btn-group move-rigth" ng-if="settings.advanced">
-    <button type="button" class="btn btn-primary" ui-sref="browseRepos">
-      Browse Repos
-    </button>
+<!-- browse repo removed -->
   </div>
-  <h1> <i class="fa fa-sitemap"></i> Images</h1>
+  <h1 class="header-small"> <i class="fa fa-sitemap"></i> Images</h1>
 </div>
 <div class="panel panel-default" ng-if="images.length > 0">
   <div class="panel-heading" ng-hide="images.length < searchThreshold">
@@ -42,7 +40,7 @@
         <tr ng-repeat="image in images | filter:search | limitTo:viewLimit | orderBy:sort:reverse"
         ng-if="settings.advanced || !imageFilter(image, '<none>')">
           <td>
-            <span class="badge" ng-if=" !imageFilter(image, '<none>')">
+            <span class="badge" ng-if=" !imageFilter(image, '<none>')" style="width: 30px;">
               {{:: getContainersCount(image) }}
             </span>
             <button class="btn btn-success btn-xs" ng-if=" !imageFilter(image, '<none>')"
