@@ -1,4 +1,4 @@
-// https://docs.docker.com/reference/api/docker_remote_api_v1.16/ 
+// https://docs.docker.com/reference/api/docker_remote_api_v1.22/
 angular.module( 'docker', ['ngResource'] )
  
 .factory( 'Settings', function( $location ) {
@@ -59,22 +59,6 @@ angular.module( 'docker', ['ngResource'] )
     kill: { method: 'POST', params:{ id: '@id', action: 'kill' } }, 
     // DELETE /containers/(id)
     remove: { method: 'DELETE', params:{ id: '@id' } }
-  });
-})
-
-.factory( 'Commit', function( $resource, Settings ) {
-  // POST /commit?container=(id)&repo=(name)
-  return $resource(Settings.url+'/commit', {}, {
-    post: { method: 'POST', params:{ container: '@id', repo: '@name' } }
-  });
-})
-
-// tar zcf Dockerfile.tar.gz Dockerfile
-// curl -v -X POST -H "Content-Type:application/tar" --data-binary '@Dockerfile.tar.gz' http://proxy/build?t=sample
-.factory( 'Build', function( $resource, Settings ) {
-  // POST /build?t=(name)
-  return $resource(Settings.url+'/build', {}, {
-    post: { method:'POST', t: '@name' }
   });
 })
 

@@ -16,7 +16,6 @@ angular.module( 'amhub', [
   'app.startContainer',
   'app.createContainer',
   'app.containerInfo',
-  'app.commitContainer',
   'app.removeContainer'
 ])
 
