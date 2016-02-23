@@ -1,8 +1,15 @@
 <div ng-if="containers.length > 0">
-  <h1 class="header-small"> <i class="fa fa-th"></i>  Containers</h1>
+  <h1 class="header-small"> <i class="fa fa-th"></i>  Containers
+    <div class="pull-right">
+      <button class="btn btn-sm btn-success" type="button" ng-click="actionSelected('Start')">Start</button>
+      <button class="btn btn-sm btn-warning" type="button" ng-click="actionSelected('Stop')">Stop</button>
+      <button class="btn btn-sm btn-danger" type="button" ng-click="actionSelected('Remove')">Remove</button>
+    </div>
+  </h1>
 </div>
 <div class="panel panel-default" ng-if="containers.length > 0">
   <div class="panel-heading" ng-hide="containers.length < searchThreshold">
+
     <div class="input-group">
       <span class="input-group-addon"><i class="fa fa-search"></i></span>
       <input ng-model="search" class="form-control" placeholder="Containers search for ...">
@@ -15,6 +22,10 @@
     <table class="table table-striped">
       <thead>
         <tr>
+          <th>
+            <span class="glyphicon glyphicon-check"
+                  ng-click="selectAllContainers(visibleContainers)"></span>
+          </th>
           <th>Actions</th>
           <th>
             <a href ng-click="sort='Name'; reverse=!reverse">
@@ -39,9 +50,14 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="container in containers | filter:search | limitTo:viewLimit | orderBy:sort:reverse"
+        <tr ng-repeat="container in visibleContainers = (containers | filter:search | limitTo:viewLimit | orderBy:sort:reverse)"
         ng-if="settings.advanced || !imageFilter(container, 'amhub')"
         ng-init="name=container.Name">
+
+          <td>
+            <input type="checkbox" ng-model="container.Selected" ng-click="selectContainer(container.Selected, visibleContainers)">
+          </td>
+
           <td>
             <button class="btn btn-success btn-xs" ui-sref="startContainer({name: name})"
             ng-if="container.Status.indexOf('Up')">
