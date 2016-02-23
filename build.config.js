@@ -59,7 +59,8 @@ module.exports = {
       'vendor/FileSaver/FileSaver.min.js'
     ],
     css: [
-      'vendor/bootswatch-dist/css/bootstrap.min.css'
+      'vendor/bootswatch-dist/css/bootstrap.min.css',
+      'vendor/bootswatch-dist/fonts/*'
     ],
     assets: [
     ]
