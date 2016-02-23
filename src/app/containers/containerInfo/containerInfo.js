@@ -33,7 +33,7 @@ angular.module( 'app.containerInfo', [
           .then(function( container ) {
             Container.stop({ id: container.Id }, function() {
               ContainerService.update();
-              console.log('Container stoped.');
+              console.log('Container stopped.');
             });
         });
         $state.transitionTo('home');
