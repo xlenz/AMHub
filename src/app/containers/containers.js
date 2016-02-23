@@ -84,6 +84,9 @@ angular.module( 'app.containers', [
       $rootScope.containers = [];
       for(var i in containers) {
         if( advancedView(containers[i], settings.filter) ) {
+          if(containers[i].Names && containers[i].Names[0]) {
+            containers[i].Name = containers[i].Names[0].slice(1);
+          }
           $rootScope.containers.push(containers[i]);
         }
       }
@@ -96,8 +99,8 @@ angular.module( 'app.containers', [
     return self.init().then(function() {
       for (var i in $rootScope.containers) {
         var container = $rootScope.containers[i];
-        if(container.Names[0]) {
-          if(container.Names[0].slice(1) == name) { 
+        if(container.Name) {
+          if(container.Name == name) {
             return container;
           }
         } else {
