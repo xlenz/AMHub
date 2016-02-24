@@ -118,6 +118,7 @@ angular.module( 'app.images', [
   this.remove = function( name ) {
     var removeImage = function( image ) {
       Image.remove({ id: image.Id }, function() {
+        self.update();
         console.log('Image removed.');
       });
     }; 
