@@ -50,7 +50,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="container in visibleContainers = (containers | filter:search | limitTo:viewLimit | orderBy:sort:reverse)"
+        <tr ng-repeat="container in visibleContainers = (containers | filter:search | limitTo:viewLimit | orderBy:sort:reverse) track by container.Id"
         ng-if="settings.advanced || !imageFilter(container, 'amhub')"
         ng-init="name=container.Name">
 
@@ -59,11 +59,11 @@
           </td>
 
           <td>
-            <button class="btn btn-success btn-xs" ui-sref="startContainer({name: name})"
+            <button class="btn btn-success btn-xs" ng-click="startContainer(container.Id)"
             ng-if="container.Status.indexOf('Up')">
               Start
             </button>
-            <button class="btn btn-warning btn-xs" ui-sref="stopContainer({name: name})"
+            <button class="btn btn-warning btn-xs" ng-click="stopContainer(container.Id)"
             ng-if=" !container.Status.indexOf('Up')">
               Stop
             </button>
