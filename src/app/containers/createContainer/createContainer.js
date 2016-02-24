@@ -40,7 +40,7 @@ angular.module( 'app.createContainer', [
 })
 
 .controller( 'CreateContainerCtrl', 
-  function CreateContainerCtrl( $scope, $rootScope, $stateParams, Cookies, Config, Image, Container, Env, ContainerService ) {
+  function CreateContainerCtrl( $scope, $rootScope, $stateParams, Cookies, Config, Image, Container, Env, ContainerService, $q ) {
 
   var imageName = decodeURIComponent($stateParams.name);
 
@@ -48,12 +48,12 @@ angular.module( 'app.createContainer', [
   $scope.hostVolumes = [];
   $scope.environmentVariables = [];
 
-  //commented this to avoid confusion
-  // $scope.limits = {
-  //   memory: '1.5',
-  //   swap: '0',
-  //   cpu: '50'
-  // };
+  $scope.isBatchCreate = false;
+  $scope.canStartBacth = false;
+  $scope.batchStartIndex = 1;
+  $scope.batchEndIndex = 1;
+  var batchLimit = 100;
+  var batchKeyword = '{index}';
 
   Config.get({}, function( config ) {
     $scope.config = config;
@@ -72,38 +72,81 @@ angular.module( 'app.createContainer', [
   $scope.env = Env.get({});
 
   $scope.create = function() {
-    var bindingVolumes = [];
-    var i = 0;
-    for (var volume in $scope.image.Config.Volumes) {
-      var key = $scope.hostVolumes[i]; i++;
-      if(key) {
-        bindingVolumes.push(key+':'+volume);
-      }
-    }    
+    if (!$scope.createContainerForm.$valid) {
+      return;
+    }
+
+    removeBadEnvironmentVariables();
+
+    if ($scope.isBatchCreate) return $scope.batchCreate();
+
     if ( $scope.config.docker ) {
       bindingVolumes.push('/var/run/docker.sock:/var/run/docker.sock');
       bindingVolumes.push($scope.env.DOCKER + ':/bin/docker');
     }
 
-    removeBadEnvironmentVariables();
-
-    var createContainerParams = {
+    Container.create({
       Image: imageName,
       name: $scope.name,
       env: $scope.environmentVariables,
       Hostname: $scope.name
-      //Memory: $scope.limits.memory*1073741824,
-      //MemorySwap: $scope.limits.swap//,
-      //CpuShares: 1024*$scope.limits.cpu/100
-    };
-
-    Container.create(createContainerParams, function( created ) {
+    }, function( created ) {
       console.log('Container created.');
       ContainerService.update();
       // close after creation
       $scope.$close();
     });
   };
+
+  $scope.batchCreate = function() {
+    if ( $scope.batchEndIndex <= $scope.batchStartIndex
+      || $scope.batchEndIndex - $scope.batchStartIndex > batchLimit
+      || $scope.batchStartIndex < 0
+      || !$scope.name.includes(batchKeyword) ) {
+      return alert('Start index should be > end index\n' + batchKeyword + ' should exist in name\nBatch create limit: ' + batchLimit);
+    }
+
+    var i = $scope.batchStartIndex;
+    var doubleCheckCounter = 0;
+    var qArr = [];
+    for (; i <= $scope.batchEndIndex && doubleCheckCounter < batchLimit; i++, doubleCheckCounter++) {
+      var indexWithLeadingZeros = pad(i, 4);
+      var containerName = $scope.name.replace(new RegExp(batchKeyword, 'g'), indexWithLeadingZeros);
+      var environmentVariables = [];
+
+      if ($scope.environmentVariables) {
+        for (var j = 0; j < $scope.environmentVariables.length; j++) {
+          if ($scope.environmentVariables[j].includes(batchKeyword)) {
+            environmentVariables.push($scope.environmentVariables[j].replace(new RegExp(batchKeyword, 'g'), indexWithLeadingZeros));
+          } else {
+            environmentVariables.push($scope.environmentVariables[j]);
+          }
+        }
+      }
+
+      qArr.push(Container.create({
+        Image: imageName,
+        name: containerName,
+        env: environmentVariables,
+        Hostname: containerName
+      }));
+    }
+
+    //todo: fix defect. update service should be called once all containers created
+    //todo: currently it is called just after start
+    //$q.all(qArr).then(function( created ) {
+      //console.log(qArr.length + ' Containers created.');
+      //ContainerService.update();
+    //});
+
+    $scope.$close();
+  };
+
+  function pad(num, size) {
+    var s = num+"";
+    while (s.length < size) s = "0" + s;
+    return s;
+  }
 
   var removeBadEnvironmentVariables = function() {
     if ($scope.environmentVariables === null || $scope.environmentVariables.length === 0) {
