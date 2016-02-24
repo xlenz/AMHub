@@ -42,11 +42,6 @@
               <i class="fa fa-sort"></i> Image
             </a>
           </th>
-          <th>
-            <a href ng-click="sort='Created'; reverse=!reverse">
-              <i class="fa fa-sort"></i> Created
-            </a>
-          </th>
         </tr>
       </thead>
       <tbody>
@@ -75,17 +70,15 @@
             <a ui-sref="containerInfo({name: container.Name})">{{:: container.Name }}</a>
           </td>
           <td>
-            <span class="label label-{{::container.Status.indexOf('Up')?'danger':'success'}}">
-              {{:: container.Status }}
+            <span class="label label-{{container.Status.indexOf('Up')?'danger':'success'}}">
+              {{container.Status.replace('(137)', '') }}
             </span>
           </td>
           <td>
-            <a ui-sref="imageInfo({name: container.Image})" ng-if="settings.advanced">
+            <a ui-sref="imageInfo({name: container.Image})">
               {{:: container.Image }}
             </a>
-            <span ng-if=" !settings.advanced">{{:: container.Image }}</span>
           </td>
-          <td>{{:: container.Created * 1000 | date:'yyyy-MM-dd HH:mm:ss' }}</td>
         </tr>
       </tbody>
     </table>
