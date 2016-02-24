@@ -25,20 +25,6 @@ angular.module( 'app.containerInfo', [
           });
       }
     })
-    .state( 'stopContainer', {
-      url: 'containers/:name/stop',
-      parent: 'home',
-      onEnter: function onEnter( $rootScope, $state, $stateParams, ContainerService, Container ) {
-        ContainerService.getByName( decodeURIComponent($stateParams.name) )
-          .then(function( container ) {
-            Container.stop({ id: container.Id }, function() {
-              ContainerService.update();
-              console.log('Container stopped.');
-            });
-        });
-        $state.transitionTo('home');
-      }
-    })
   ;
 })
 
