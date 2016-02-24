@@ -53,20 +53,10 @@ angular.module('app.startContainer', [
 
       $scope.start = function () {
 
-        ContainerCreateService.start($scope.container.Id, function() {
+        ContainerStartService.start($scope.container.Id, function() {
           $scope.$close();
         });
 
-        //var startContainerParams = {
-        //  id: $scope.container.Id,
-        //  privileged: true
-        //};
-        //
-        //Container.start(startContainerParams, function () {
-        //  console.log('Container started.');
-        //  ContainerService.update();
-        //  $scope.$close();
-        //});
       };
 
       $scope.close = function () {
