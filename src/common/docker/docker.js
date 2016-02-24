@@ -36,7 +36,7 @@ angular.module( 'docker', ['ngResource'] )
     search: { method: 'GET', params:{ action: 'search', term: '@term' }, isArray: true },
     // POST /images/create?fromImage=(name)
     pull: { method: 'POST', params:{ action: 'create', fromImage: '@fromImage' } },
-    // DELETE /images/(id)?forse=1
+    // DELETE /images/(id)?force=1
     remove: { method: 'DELETE', params:{ id: '@id', force: 1 }, isArray: true }
   });
 })
