@@ -65,10 +65,7 @@ angular.module('app.containers', [])
 
             case 'Stop':
               angular.forEach(selectedContainers, function (containerId) {
-                Container.stop({ id: containerId }, function() {
-                  ContainerService.update();
-                  console.log('Container stopped.');
-                });
+                ContainerService.stop(containerId);
               });
               $scope.selectedAllContainers = false;
               break;
@@ -96,11 +93,19 @@ angular.module('app.containers', [])
         return selectedContainers;
       }
 
+      $scope.startContainer = function (containerId) {
+        ContainerStartService.start(containerId);
+      };
+      $scope.stopContainer = function (containerId) {
+        ContainerService.stop(containerId);
+      };
+
     })
 
   .service('ContainerService',
     function ($rootScope, $q, Cookies, Config, Container) {
       var self = this;
+      $rootScope.containers = [];
 
       this.init = function () {
         if (!$rootScope.containers) {
@@ -138,15 +143,12 @@ angular.module('app.containers', [])
 
         var deferred = $q.defer();
         Container.query({}, function (containers) {
-          $rootScope.containers = [];
           for (var i in containers) {
-            if (advancedView(containers[i], settings.filter)) {
-              if (containers[i].Names && containers[i].Names[0]) {
-                containers[i].Name = containers[i].Names[0].slice(1);
-              }
-              $rootScope.containers.push(containers[i]);
+            if (containers[i].Names && containers[i].Names[0]) {
+              containers[i].Name = containers[i].Names[0].slice(1);
             }
           }
+          $rootScope.containers = containers;
           return deferred.resolve();
         });
         return deferred.promise;
@@ -207,13 +209,17 @@ angular.module('app.containers', [])
       };
 
       this.remove = function (id) {
-        //return Container.kill({ id: id }, function() {
-        //console.log('Container killed.');
         return Container.remove({id: id}, function () {
           console.log('Container removed.');
           self.update();
         });
-        //});
+      };
+
+      this.stop = function (id) {
+        return Container.stop({id: id}, function () {
+          console.log('Container stopped.');
+          self.update();
+        });
       };
 
       this.getAllByImage = function (imageName) {
