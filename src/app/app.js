@@ -10,7 +10,7 @@ angular.module( 'amhub', [
   'app.images',
   'app.imageInfo',
   'app.removeImage',
-  'app.browseRepos',
+  //'app.browseRepos',
   'app.containers',
   'app.bindingAddress',
   'app.startContainer',
@@ -37,6 +37,9 @@ angular.module( 'amhub', [
       $scope.pageTitle = 'AM Hub' ;
     }
   });
+  $scope.scrollTop = function () {
+    document.body.scrollTop = 0;
+  }
 })
 
 .directive( 'keyEnter', function () {
