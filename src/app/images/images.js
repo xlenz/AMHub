@@ -19,7 +19,7 @@ angular.module( 'app.images', [
 */
 
 .controller( 'ImagesCtrl', 
-  function ImagesCtrl( $scope, $rootScope, $modal, $interval, Cookies, ImageService ) {
+  function ImagesCtrl( $scope, $rootScope, $uibModal, $interval, Cookies, ImageService ) {
 
   $scope.settings = Cookies.settings;
   $scope.searchThreshold = 10;

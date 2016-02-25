@@ -1,7 +1,7 @@
 angular.module('app.containers', [])
 
   .controller('ContainersCtrl',
-    function ContainersCtrl($scope, $modal, $interval, Cookies, ContainerService, ImageService, ContainerStartService, Container) {
+    function ContainersCtrl($scope, $uibModal, $interval, Cookies, ContainerService, ImageService, ContainerStartService, Container) {
 
       $scope.settings = Cookies.settings;
       $scope.searchThreshold = 30;

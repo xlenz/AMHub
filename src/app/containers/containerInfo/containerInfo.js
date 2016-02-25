@@ -9,8 +9,8 @@ angular.module( 'app.containerInfo', [
     .state( 'containerInfo', {
       url: 'containers/:name',
       parent: home,
-      onEnter: function onEnter( $modal, $state ) {
-        $modal
+      onEnter: function onEnter( $uibModal, $state ) {
+        $uibModal
           // handle modal open
           .open({
             templateUrl: 'containers/containerInfo/containerInfo.tpl.html',

@@ -8,8 +8,8 @@ angular.module( 'app.createContainer', [
   $stateProvider
     .state( 'createContainerMain', {
       parent: home,
-      onEnter: function onEnter( $modal, $state ) {
-        $modal
+      onEnter: function onEnter( $uibModal, $state ) {
+        $uibModal
           // handle modal open
           .open({
             // main view

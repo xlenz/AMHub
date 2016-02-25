@@ -9,8 +9,8 @@ angular.module( 'app.removeImage', [
     .state( 'removeImage', {
       url: 'images/:name/remove',
       parent: home,
-      onEnter: function onEnter( $modal, $state ) {
-        $modal
+      onEnter: function onEnter( $uibModal, $state ) {
+        $uibModal
           // handle modal open
           .open({
             templateUrl: 'images/removeImage/removeImage.tpl.html',

@@ -9,8 +9,8 @@ angular.module( 'app.removeContainer', [
     .state( 'removeContainer', {
       url: 'containers/:name/remove',
       parent: home,
-      onEnter: function onEnter( $modal, $state ) {
-        $modal
+      onEnter: function onEnter( $uibModal, $state ) {
+        $uibModal
           // handle modal open
           .open({
             templateUrl: 'containers/removeContainer/removeContainer.tpl.html',

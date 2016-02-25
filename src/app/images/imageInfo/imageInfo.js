@@ -9,8 +9,8 @@ angular.module( 'app.imageInfo', [
     .state( 'imageInfo', {
       url: 'images/:name',
       parent: home,
-      onEnter: function onEnter( $modal, $state ) {
-        $modal
+      onEnter: function onEnter( $uibModal, $state ) {
+        $uibModal
           // handle modal open
           .open({
             templateUrl: 'images/imageInfo/imageInfo.tpl.html',

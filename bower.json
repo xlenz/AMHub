@@ -5,9 +5,9 @@
     "angular": "~1.4",
     "angular-resource": "~1.4",
     "angular-cookies": "~1.4",
-    "angular-bootstrap": "~0.14",
+    "angular-bootstrap": "~1.1.2",
     "angular-ui-router": "~0.2",
     "bootstrap": "~4.0.0",
-    "bootswatch-dist": "3.3.5-cerulean"
+    "bootswatch-dist": "3.3.6-cerulean"
   }
 }
