@@ -22,8 +22,8 @@ angular.module( 'app.images', [
   function ImagesCtrl( $scope, $rootScope, $uibModal, $interval, Cookies, ImageService ) {
 
   $scope.settings = Cookies.settings;
-  $scope.searchThreshold = 10;
-  $scope.viewLimit = 10;
+  $scope.searchThreshold = 20;
+  $scope.viewLimit = 20;
   $scope.sort = '-Created';
 
   $scope.update = function() {
