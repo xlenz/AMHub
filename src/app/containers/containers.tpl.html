@@ -47,7 +47,7 @@
       <tbody>
         <tr ng-repeat="container in visibleContainers = (containers | filter:search | limitTo:viewLimit | orderBy:sort:reverse) track by container.Id"
         ng-if="settings.advanced || !imageFilter(container, 'amhub')"
-        ng-init="name=container.Name">
+        ng-init="name=container.Name" ng-hide="container.Image.startsWith('sha256:')">
 
           <td>
             <input type="checkbox" ng-model="container.Selected" ng-click="selectContainer(container.Selected, visibleContainers)">
