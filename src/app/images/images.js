@@ -19,8 +19,8 @@ angular.module( 'app.images', [
 */
 
 .controller( 'ImagesCtrl', 
-  function ImagesCtrl( $scope, $rootScope, $uibModal, $interval, Cookies, ImageService ) {
-
+  function ImagesCtrl( $scope, $rootScope, $uibModal, $interval, Cookies, ImageService, $location ) {
+  $scope.locationHost = $location.host();
   $scope.settings = Cookies.settings;
   $scope.searchThreshold = 20;
   $scope.viewLimit = 20;
@@ -120,6 +120,8 @@ angular.module( 'app.images', [
       Image.remove({ id: image.Id }, function() {
         self.update();
         console.log('Image removed.');
+      }, function (err) {
+        alert(err.data);
       });
     }; 
     var removeAllImages = function( name ) {
