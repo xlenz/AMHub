@@ -14,7 +14,8 @@ angular.module( 'app.createContainer', [
           .open({
             // main view
             templateUrl: 'containers/createContainer/createContainer.tpl.html',
-            controller: 'CreateContainerCtrl'
+            controller: 'CreateContainerCtrl',
+            backdrop: 'static'
           })
           .result.then( function() {
             // after clicking OK button
