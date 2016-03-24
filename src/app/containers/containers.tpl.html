@@ -8,7 +8,7 @@
   </h1>
 </div>
 <div class="panel panel-default" ng-if="containers.length > 0">
-  <div class="panel-heading" ng-hide="containers.length < searchThreshold">
+  <div class="panel-heading">
 
     <div class="input-group">
       <span class="input-group-addon"><i class="fa fa-search"></i></span>
@@ -46,7 +46,6 @@
       </thead>
       <tbody>
         <tr ng-repeat="container in visibleContainers = (containers | filter:search | limitTo:viewLimit | orderBy:sort:reverse) track by container.Id"
-        ng-if="settings.advanced || !imageFilter(container, 'amhub')"
         ng-init="name=container.Name" ng-hide="container.Image.startsWith('sha256:')">
 
           <td>
@@ -75,8 +74,8 @@
             </span>
           </td>
           <td>
-            <a ui-sref="imageInfo({name: container.Image})">
-              {{:: container.Image }}
+            <a ui-sref="imageInfo({name: container.Image})" title="{{:: container.Image }}">
+              {{:: (container.Image.length > 41) ? container.Image.substr(0, 39) + ".." : container.Image }}
             </a>
           </td>
         </tr>
