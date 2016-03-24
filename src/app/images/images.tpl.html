@@ -26,7 +26,7 @@
               <i class="fa fa-sort"></i> Name
             </a>
           </th>
-          <th ng-if="settings.advanced">
+          <th>
             <a href ng-click="sort='VirtualSize'; reverse=!reverse">
               <i class="fa fa-sort"></i> Size
             </a>
@@ -39,8 +39,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="image in images | filter:search | limitTo:viewLimit | orderBy:sort:reverse"
-        ng-if="settings.advanced || !imageFilter(image, '<none>')">
+        <tr ng-repeat="image in images | filter:search | limitTo:viewLimit | orderBy:sort:reverse">
           <td>
             <span class="badge" ng-if=" !imageFilter(image, '<none>')" style="width: 30px;">
               {{:: getContainersCount(image) }}
@@ -55,13 +54,12 @@
           </td>
           <td>
             <li ng-repeat='name in image.RepoTags'>
-              <a ui-sref="imageInfo({name: name})" ng-if="settings.advanced && !imageFilter(image, '<none>')">
-                {{:: name }}
+              <a ui-sref="imageInfo({name: name})">
+                {{:: (name.length > 65) ? name.substr(0, 63) + ".." : name }}
               </a>
-              <span ng-if=" !settings.advanced && !imageFilter(image, '<none>')">{{:: name }}</span> 
             </li>
           </td>
-          <td ng-if="settings.advanced">{{:: image.VirtualSize | filesize }}</td>
+          <td>{{:: image.VirtualSize | filesize }}</td>
           <td>{{:: image.Created * 1000 | date:'yyyy-MM-dd HH:mm:ss' }}</td>
         </tr>
       </tbody>
