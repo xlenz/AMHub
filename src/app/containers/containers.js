@@ -106,6 +106,7 @@ angular.module('app.containers', [])
     function ($rootScope, $q, Cookies, Config, Container) {
       var self = this;
       $rootScope.containers = [];
+      $rootScope.runningContainers = 0;
 
       this.init = function () {
         if (!$rootScope.containers) {
@@ -143,12 +144,17 @@ angular.module('app.containers', [])
 
         var deferred = $q.defer();
         Container.query({}, function (containers) {
+          var runningContainers = 0;
           for (var i in containers) {
             if (containers[i].Names && containers[i].Names[0]) {
               containers[i].Name = containers[i].Names[0].slice(1);
             }
+            if (containers[i].Status && containers[i].Status.includes('Up')) {
+              runningContainers++;
+            }
           }
           $rootScope.containers = containers;
+          $rootScope.runningContainers = runningContainers;
           return deferred.resolve();
         });
         return deferred.promise;

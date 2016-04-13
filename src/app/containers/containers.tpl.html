@@ -1,6 +1,7 @@
 <div ng-if="containers.length > 0">
   <h1 class="header-small"> <i class="fa fa-th"></i>  Containers
     <div class="pull-right">
+      <span class="label label-primary" style="font-size: 18px; vertical-align: middle;">Running: {{runningContainers}}</span>
       <button class="btn btn-sm btn-success" type="button" ng-click="actionSelected('Start')">Start</button>
       <button class="btn btn-sm btn-warning" type="button" ng-click="actionSelected('Stop')">Stop</button>
       <button class="btn btn-sm btn-danger" type="button" ng-click="actionSelected('Remove')">Remove</button>
