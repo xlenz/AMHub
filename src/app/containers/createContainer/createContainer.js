@@ -55,6 +55,7 @@ angular.module( 'app.createContainer', [
   $scope.batchEndIndex = 1;
   var batchLimit = 100;
   var batchKeyword = '{index}';
+  $scope.hostnameRegex = /^(?!-)[a-zA-Z0-9-]{1,63}$/g;
 
   Config.get({}, function( config ) {
     $scope.config = config;
