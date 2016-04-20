@@ -1,7 +1,7 @@
 angular.module('app.containers', [])
 
   .controller('ContainersCtrl',
-    function ContainersCtrl($scope, $uibModal, $interval, Cookies, ContainerService, ImageService, ContainerStartService, Container) {
+    function ContainersCtrl($scope, $uibModal, $interval, Cookies, ContainerService, ImageService, ContainerStartService, Container, $http) {
 
       $scope.settings = Cookies.settings;
       $scope.searchThreshold = 30;
@@ -9,6 +9,8 @@ angular.module('app.containers', [])
       $scope.sort = '-Created';
       $scope.selectedAllContainers = false;
       $scope.visibleContainers = [];
+      $scope.cpu = '?';
+      $scope.ram = '?';
 
       $scope.update = function () {
         if (!$scope.selectedAllContainers) {
@@ -100,6 +102,19 @@ angular.module('app.containers', [])
         ContainerService.stop(containerId);
       };
 
+      setInterval(function() {
+        getCpuAndRam();
+      }, 8000);
+
+      function getCpuAndRam() {
+        $http.post('/cpu').then(function (data) {
+          $scope.cpu = data.data;
+        });
+        $http.post('/ram').then(function (data) {
+          $scope.ram = data.data;
+        });
+      }
+      getCpuAndRam();
     })
 
   .service('ContainerService',

@@ -1,4 +1,6 @@
 var net = require('net');
+var osUtils  = require('os-utils');
+var free = require('freem');
 
 // config
 var fs = require('fs')
@@ -50,6 +52,29 @@ var path = require('path');
 app.use(express.static(path.resolve(__dirname, '../bin')));
 app.get('/', function (req, res) {
   res.redirect('/index.html');
+});
+
+app.post('/cpu', function (req, res) {
+  osUtils.cpuUsage(function(v){
+    try {
+      res.send(Math.floor(v * 100) + '%');
+    } catch(err) {
+      res.send('?');
+    }
+  });
+});
+
+app.post('/ram', function (req, res) {
+  free.m(function (err, data) {
+    try {
+      if (err) return res.send('?');
+      var ramTotal = data[0].total;
+      var ramFree = Number(data[0].buffers) + Number(data[0].free);
+      res.send(ramTotal + '/' + ramFree);
+    } catch(err) {
+      res.send('?');
+    }
+  });
 });
 
 server.listen(80, function () {

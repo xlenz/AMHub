@@ -1,8 +1,10 @@
 {
   "name": "amhub",
   "dependencies": {
+    "body-parser": "~1.14",
     "express": "~4.13",
-    "body-parser": "~1.14"
+    "freem": "^1.0.0",
+    "os-utils": "0.0.14"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
