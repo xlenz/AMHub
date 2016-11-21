@@ -48,6 +48,7 @@ angular.module( 'app.createContainer', [
   $scope.settings = Cookies.settings;
   $scope.hostVolumes = [];
   $scope.environmentVariables = [];
+  var bindingVolumes = [];
 
   $scope.isBatchCreate = false;
   $scope.canStartBacth = false;
@@ -91,7 +92,9 @@ angular.module( 'app.createContainer', [
       Image: imageName,
       name: $scope.name,
       env: $scope.environmentVariables,
-      Hostname: $scope.name
+      Hostname: $scope.name,
+      Privileged: true,
+      Binds: bindingVolumes
     }, function( created ) {
       console.log('Container created.');
       ContainerService.update();
