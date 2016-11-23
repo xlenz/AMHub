@@ -94,6 +94,7 @@ angular.module( 'app.createContainer', [
       env: $scope.environmentVariables,
       Hostname: $scope.name,
       Privileged: true,
+      CapAdd: ["NET_ADMIN"],
       Binds: bindingVolumes
     }, function( created ) {
       console.log('Container created.');
