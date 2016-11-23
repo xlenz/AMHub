@@ -134,7 +134,10 @@ angular.module( 'app.createContainer', [
         Image: imageName,
         name: containerName,
         env: environmentVariables,
-        Hostname: containerName
+        Hostname: containerName,
+        Privileged: true,
+        CapAdd: ["NET_ADMIN"],
+        Binds: bindingVolumes
       }));
     }
 
