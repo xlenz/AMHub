@@ -2,7 +2,7 @@
 angular.module( 'docker', ['ngResource'] )
  
 .factory( 'Settings', function( $location ) {
-  var api = 'v1.24';
+  var api = 'v1.27';
   var DOCKER_HOST = $location.host();
   var DOCKER_PORT = '2375';
   // url to proxy server
@@ -54,7 +54,7 @@ angular.module( 'docker', ['ngResource'] )
     // POST /containers/(id)/start
     start: { method: 'POST', params:{ id: '@id', action: 'start' }, transformRequest: data => null }, 
     // POST /containers/(id)/stop
-    stop: { method: 'POST', params:{ id: '@id', action: 'stop' } },
+    stop: { method: 'POST', params:{ id: '@id', action: 'stop', t: 1 } },
     // POST /containers/(id)/kill
     kill: { method: 'POST', params:{ id: '@id', action: 'kill' } }, 
     // DELETE /containers/(id)
