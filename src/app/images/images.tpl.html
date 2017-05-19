@@ -7,12 +7,12 @@
   <h1 class="header-small"> <i class="fa fa-sitemap"></i> Images</h1>
 </div>
 <div class="panel panel-default" ng-if="images.length > 0">
-  <div class="panel-heading" ng-hide="images.length < searchThreshold">
+  <div class="panel-heading">
     <div class="input-group">
       <span class="input-group-addon"><i class="fa fa-search"></i></span>
       <input ng-model="search" class="form-control" placeholder="Images search for ...">
       <span class="input-group-btn" ng-show="images.length > viewLimit">
-        <button class="btn btn-default" type="button" ng-click="viewLimit=999">Show All</button>
+        <button class="btn btn-info" type="button" ng-click="viewLimit=999">Show All</button>
       </span>
     </div>
   </div>
@@ -39,7 +39,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="image in images | filter:search | limitTo:viewLimit | orderBy:sort:reverse">
+        <tr ng-repeat="image in images | filter:search | limitTo:viewLimit | orderBy:sort:reverse | orderBy:sortSecond:true | orderBy:sortFirst:true">
           <td>
             <span class="badge" ng-if=" !imageFilter(image, '<none>')" style="width: 30px;">
               {{:: getContainersCount(image) }}

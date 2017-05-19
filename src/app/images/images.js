@@ -22,9 +22,21 @@ angular.module( 'app.images', [
   function ImagesCtrl( $scope, $rootScope, $uibModal, $interval, Cookies, ImageService, $location ) {
   $scope.locationHost = $location.host();
   $scope.settings = Cookies.settings;
-  $scope.searchThreshold = 20;
-  $scope.viewLimit = 20;
-  $scope.sort = '-Created';
+  $scope.searchThreshold = 30;
+  $scope.viewLimit = 30;
+  $scope.sortFirst = function (record) {
+    if (!record.ParentId || record.ParentId === "") {
+      return false;
+    }
+    return true;
+  }
+  $scope.sortSecond = function (record) {
+    if (record.RepoTags && record.RepoTags[0] && (record.RepoTags[0].includes('server-') || record.RepoTags[0].includes('agent-') || record.RepoTags[0].includes('relay-'))) {
+      return false;
+    }
+    return true;
+  }
+  $scope.sort = 'RepoTags'
 
   $scope.update = function() {
     ImageService.update();
