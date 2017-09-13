@@ -1,7 +1,7 @@
 angular.module('app.containers', [])
 
   .controller('ContainersCtrl',
-    function ContainersCtrl($scope, $uibModal, $interval, Cookies, ContainerService, ImageService, ContainerStartService, Container, $http) {
+    function ContainersCtrl($scope, $uibModal, Cookies, ContainerService, ImageService, ContainerStartService, Container, $http) {
 
       $scope.settings = Cookies.settings;
       $scope.searchThreshold = 30;
@@ -14,17 +14,30 @@ angular.module('app.containers', [])
 
       $scope.update = function () {
         if (!$scope.selectedAllContainers) {
-          ContainerService.update();
+          return ContainerService.update();
         }
       };
-      var intervalPromise = $interval($scope.update, 8000);
+
+      let conPing = true
+      let cpuRamPing = true
+      function conPinger (delay) {
+        if (!conPing) return
+        setTimeout(() => {
+          if (!conPing) return
+          let updPromise = $scope.update()
+          if (!updPromise) { return conPinger() }
+          updPromise.catch(() => { conPinger(21000) })
+          updPromise.then(() => { conPinger() })
+        }, delay || 8000)
+      }
+      conPinger()
 
       ContainerService.update().then(ImageService.update());
 
       $scope.imageFilter = ContainerService.imageFilter;
 
       $scope.$on('$destroy', function () {
-        $interval.cancel(intervalPromise);
+        conPing = false
       });
 
       $scope.selectAllContainers = function (visibleContainers) {
@@ -59,10 +72,24 @@ angular.module('app.containers', [])
         if (confirm(actionSelectedName + " all selected containers (" + selectedContainers.length + ")?")) {
           switch (actionSelectedName) {
             case 'Start':
+              let qArr = []
               angular.forEach(selectedContainers, function (containerId) {
-                ContainerStartService.start(containerId);
+                qArr.push(containerId)
               });
-              $scope.selectedAllContainers = false;
+              if (qArr.length > 2) alert('Starting multiple containers! Please dont reload page! See browser console for details...')
+              function batchStarter(delay) {
+                if (qArr.length === 0) {
+                  $scope.selectedAllContainers = false;
+                  return;
+                }
+                console.log('Containers left to be started:', qArr.length)
+                let containerId = qArr.shift()
+                delay = qArr.length === 0 ? 1 : delay
+                ContainerStartService.start(containerId, data => {
+                  setTimeout(() => { ContainerService.update().then(data => { batchStarter(); }) }, delay || 10000)
+                })
+              }
+              batchStarter(1)
               break;
 
             case 'Stop':
@@ -96,25 +123,30 @@ angular.module('app.containers', [])
       }
 
       $scope.startContainer = function (containerId) {
-        ContainerStartService.start(containerId);
+        return ContainerStartService.start(containerId);
       };
       $scope.stopContainer = function (containerId) {
         ContainerService.stop(containerId);
       };
 
-      setInterval(function() {
-        getCpuAndRam();
-      }, 8000);
+      function cpuRamPinger (delay) {
+        if (!cpuRamPing) return
 
-      function getCpuAndRam() {
-        $http.post('/cpu').then(function (data) {
-          $scope.cpu = data.data;
-        });
-        $http.post('/ram').then(function (data) {
-          $scope.ram = data.data;
-        });
+        setTimeout(() => {
+          if (!cpuRamPing) return
+
+          $http.post('/cpu').then(data => {
+            $scope.cpu = data.data;
+
+            $http.post('/ram').then(data => {
+              $scope.ram = data.data;
+              cpuRamPinger()
+            }).catch(err => { cpuRamPinger(30000) })
+
+          }).catch(err => { cpuRamPinger(30000) })
+        }, delay || 3000)
       }
-      getCpuAndRam();
+      cpuRamPinger()
     })
 
   .service('ContainerService',

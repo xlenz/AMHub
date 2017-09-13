@@ -19,7 +19,7 @@ angular.module( 'app.images', [
 */
 
 .controller( 'ImagesCtrl', 
-  function ImagesCtrl( $scope, $rootScope, $uibModal, $interval, Cookies, ImageService, $location ) {
+  function ImagesCtrl( $scope, $rootScope, $uibModal, Cookies, ImageService, $location ) {
   $scope.locationHost = $location.host();
   $scope.settings = Cookies.settings;
   $scope.searchThreshold = 30;
@@ -39,9 +39,8 @@ angular.module( 'app.images', [
   $scope.sort = 'RepoTags'
 
   $scope.update = function() {
-    ImageService.update();
+    return ImageService.update();
   };
-  var intervalPromise = $interval($scope.update, 15000);
 
   $scope.getContainersCount = function( data ) {
     var containers = [];
@@ -55,10 +54,22 @@ angular.module( 'app.images', [
 
   $scope.imageFilter = ImageService.imageFilter;
 
+  let imgPing = true
   $scope.$on('$destroy', function () { 
-    $interval.cancel(intervalPromise);
+    imgPing = false
   });
 
+  function imgPinger (delay) {
+    if (!imgPing) return
+    setTimeout(() => {
+      if (!imgPing) return
+      let updPromise = $scope.update()
+      if (!updPromise) { return imgPinger() }
+      updPromise.catch(() => { imgPinger(30000) })
+      updPromise.then(() => { imgPinger() })
+    }, delay || 15000)
+  }
+  imgPinger()
 })
 
 .service( 'ImageService', 

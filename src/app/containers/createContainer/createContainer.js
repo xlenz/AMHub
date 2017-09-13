@@ -51,6 +51,7 @@ angular.module( 'app.createContainer', [
   var bindingVolumes = [];
 
   $scope.isBatchCreate = false;
+  $scope.batchContainersCreated = 0;
   $scope.canStartBacth = false;
   $scope.batchStartIndex = 1;
   $scope.batchEndIndex = 1;
@@ -130,7 +131,7 @@ angular.module( 'app.createContainer', [
         }
       }
 
-      qArr.push(Container.create({
+      qArr.push({
         Image: imageName,
         name: containerName,
         env: environmentVariables,
@@ -138,17 +139,24 @@ angular.module( 'app.createContainer', [
         Privileged: true,
         CapAdd: ["NET_ADMIN"],
         Binds: bindingVolumes
-      }));
+      });
     }
 
-    //todo: fix defect. update service should be called once all containers created
-    //todo: currently it is called just after start
-    //$q.all(qArr).then(function( created ) {
-      //console.log(qArr.length + ' Containers created.');
-      //ContainerService.update();
-    //});
-
-    $scope.$close();
+    function batchCreator() {
+      if (qArr.length === 0) {
+        return $scope.$close();
+      }
+      let createObj = qArr.shift()
+      Container.create(createObj).$promise.catch(() => {
+        alert('Failed to create container!')
+        console.error(err)
+        return $scope.$close();
+      }).then(() => {
+        $scope.batchContainersCreated++
+        batchCreator()
+      })
+    }
+    batchCreator()
   };
 
   function pad(num, size) {
