@@ -96,7 +96,7 @@ angular.module('app.containers', [])
                 })
               }
               if (qArr.length > 1) {
-                let qMsg = `Starting multiple containers with with delay ${qDelay/10000} seconds! Please dont reload page!`
+                let qMsg = `Starting multiple containers with with delay ${qDelay/1000} seconds! Please dont reload page!`
                 console.log(qMsg)
                 alert(qMsg + ' See browser console for details...')
                 batchStarter(qDelay)
