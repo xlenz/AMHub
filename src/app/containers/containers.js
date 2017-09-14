@@ -76,7 +76,7 @@ angular.module('app.containers', [])
               angular.forEach(selectedContainers, function (containerId) {
                 qArr.push(containerId)
               });
-              if (qArr.length > 2) alert('Starting multiple containers! Please dont reload page! See browser console for details...')
+
               function batchStarter(delay) {
                 if (qArr.length === 0) {
                   $scope.selectedAllContainers = false;
@@ -86,10 +86,16 @@ angular.module('app.containers', [])
                 let containerId = qArr.shift()
                 delay = qArr.length === 0 ? 1 : delay
                 ContainerStartService.start(containerId, data => {
-                  setTimeout(() => { ContainerService.update().then(data => { batchStarter(); }) }, delay || 10000)
+                  ContainerService.update().then(data => { setTimeout(() => { batchStarter(); }, delay || 12000) })
                 })
               }
-              batchStarter(1)
+              if (qArr.length > 1) {
+                console.log('Starting multiple containers with with delay 12 seconds! Please dont reload page!')
+                alert('Starting multiple containers with with delay 12 seconds! Please dont reload page! See browser console for details...')
+                batchStarter(12000)
+              } else {
+                batchStarter(1)
+              }
               break;
 
             case 'Stop':
