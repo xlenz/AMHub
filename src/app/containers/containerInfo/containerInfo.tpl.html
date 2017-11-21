@@ -60,10 +60,10 @@
             </td>
           </tr>
           <tr>
-            <th>Volumes</th>
+            <th style="line-height: 1;">Mounts<br><span style="font-size: 11px; color: #888;">Host -&gt; Docker</span></th>
             <td>
               <ul style="display:inline-table">
-                <li ng-repeat="(k,v) in container.Volumes">{{:: v }} -> {{:: k }}</li>
+                <li ng-repeat="mount in container.Mounts">{{:: mount.Source }} -&gt; {{:: mount.Destination }}</li>
               </ul>
             </td>
           </tr>

@@ -29,44 +29,54 @@ angular.module('app.containerInfo', [
 
   .controller('ContainerInfoCtrl',
     function ContainerInfoCtrl ($scope, $stateParams, $location, $interval, ContainerService, Container) {
-      var intervalPromise
-      ContainerService.getByName(decodeURIComponent($stateParams.name))
-        .then(function (container) {
-          Container.get({
-            id: container.Id
-          }, function (data) {
-            $scope.container = data
-            if (container.Status.indexOf('Up') != -1) {
-              intervalPromise = $interval(top, 5000)
-              top()
-            }
-          })
-        })
+      var top = () => new Promise((resolve, reject) => Container.top({ id: $scope.container.Id }, data => {
+        $scope.top = data
+        resolve()
+      }, err => { reject(err) })
+    )
 
-      var top = function () {
-        Container.top({
-          id: $scope.container.Id
-        }, function (data) {
-          $scope.top = data
-        })
+      let conPing = true
+      $scope.$on('$destroy', function () {
+        console.log('destr')
+        conPing = false
+      })
+
+      function conPinger (delay) {
+        if (!conPing) return
+        setTimeout(() => {
+          if (!conPing) return
+          let updPromise = top()
+          if (!updPromise) { return conPinger() }
+          updPromise.catch(() => { conPinger(15000) })
+          updPromise.then(() => { conPinger() })
+        }, delay || 5000)
       }
 
+      Container.get({ id: $stateParams.name }, data => {
+        $scope.container = data
+        if (data.State.Running) {
+          top()
+          conPing = true
+          conPinger()
+        }
+      })
+
       $scope.connectHTTP = function (ip, port) {
-        if (ip == '0.0.0.0') {
+        if (ip === '0.0.0.0') {
           ip = $location.host()
         }
         $scope.targeturl = 'http://' + ip + ':' + port
       }
 
       $scope.connectHTTPS = function (ip, port) {
-        if (ip == '0.0.0.0') {
+        if (ip === '0.0.0.0') {
           ip = $location.host()
         }
         $scope.targeturl = 'https://' + ip + ':' + port
       }
 
       $scope.connectRDP = function (ip, port) {
-        if (ip == '0.0.0.0') {
+        if (ip === '0.0.0.0') {
           ip = $location.host()
         }
         var blob =
@@ -84,8 +94,4 @@ angular.module('app.containerInfo', [
       $scope.close = function () {
         $scope.$dismiss()
       }
-
-      $scope.$on('$destroy', function () {
-        $interval.cancel(intervalPromise)
-      })
     })
