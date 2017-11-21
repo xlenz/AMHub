@@ -37,7 +37,6 @@ angular.module('app.containerInfo', [
 
       let conPing = true
       $scope.$on('$destroy', function () {
-        console.log('destr')
         conPing = false
       })
 
