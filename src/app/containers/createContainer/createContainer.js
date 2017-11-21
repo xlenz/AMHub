@@ -45,6 +45,7 @@ angular.module('app.createContainer', [
 
       $scope.settings = Cookies.settings
       $scope.volumes = {}
+      $scope.showVolumes = false
       $scope.environmentVariables = []
       var bindingVolumes = []
 
@@ -66,9 +67,12 @@ angular.module('app.createContainer', [
       }, function (image) {
         $scope.image = image
         $scope.environmentVariables = image.Config.Env
-        Object.keys(image.Config.Volumes).forEach(key => {
-          $scope.volumes[key] = ''
-        })
+        if (image.Config.Volumes) {
+          $scope.showVolumes = true
+          Object.keys(image.Config.Volumes).forEach(key => {
+            $scope.volumes[key] = ''
+          })
+        }
 
         // remove PATH from environment variables. May be a dirty hack
         if ($scope.environmentVariables !== null && $scope.environmentVariables.length > 0 && $scope.environmentVariables[0].indexOf('PATH=') === 0) {
