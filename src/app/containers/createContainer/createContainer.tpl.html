@@ -1,43 +1,43 @@
 <div class="modal-header">
-  <button class="close" ng-click="close()"><span>&times;</span></button>
-  <h3 class="modal-title"><i class="fa fa-files-o"></i> Create Container</h3>
+  <button class="close" ng-click="close()">
+    <span>&times;</span>
+  </button>
+  <h3 class="modal-title">
+    <i class="fa fa-files-o"></i> Create Container</h3>
 </div>
 <div class="modal-body" key-enter="create()">
   <form class="form-horizontal" name="createContainerForm">
     <div class="form-group">
       <label for="name" class="col-lg-3 control-label">Name / Hostname</label>
       <div class="col-lg-9">
-        <input type="text" class="form-control" id="name"
-               placeholder="hostname-{index}" ng-model="name" required ng-minlength="3" ng-pattern="hostnameRegex" autofocus>
+        <input type="text" class="form-control" id="name" placeholder="hostname-{index}" ng-model="name" required ng-minlength="3"
+          ng-pattern="hostnameRegex" autofocus>
       </div>
       <label for="environmentVariables" class="col-lg-3 control-label">Environment Variables</label>
       <div class="col-lg-9">
-        <textarea class="form-control" id="environmentVariables"
-                  placeholder="var1=val1-{index}&#10;var2=val2" ng-model="environmentVariables" ng-trim="false" ng-list="&#10;" rows="9"></textarea>
+        <textarea class="form-control" id="environmentVariables" placeholder="var1=val1-{index}&#10;var2=val2" ng-model="environmentVariables"
+          ng-trim="false" ng-list="&#10;" rows="9"></textarea>
       </div>
 
+      <div class="col-lg-9">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" ng-model="isBatchCreate"> Create multiple environments (replaces {index} in name end environment variables with counter)
+          </label>
+        </div>
+      </div>
+
+      <div ng-show="isBatchCreate">
+        <label for="batchStartIndex" class="col-lg-9 control-label">Start index</label>
         <div class="col-lg-9">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" ng-model="isBatchCreate">
-                    Create multiple environments (replaces {index} in name end environment variables with counter)
-                </label>
-            </div>
+          <input type="number" class="form-control" ng-model="batchStartIndex" placeholder="1" id="batchStartIndex">
         </div>
 
-        <div ng-show="isBatchCreate">
-            <label for="batchStartIndex" class="col-lg-9 control-label">Start index</label>
-            <div class="col-lg-9">
-                <input type="number" class="form-control" ng-model="batchStartIndex"
-                       placeholder="1" id="batchStartIndex">
-            </div>
-
-            <label for="batchEndIndex" class="col-lg-9 control-label">End index</label>
-            <div class="col-lg-9">
-                <input type="number" class="form-control" ng-model="batchEndIndex"
-                       placeholder="10" id="batchEndIndex">
-            </div>
+        <label for="batchEndIndex" class="col-lg-9 control-label">End index</label>
+        <div class="col-lg-9">
+          <input type="number" class="form-control" ng-model="batchEndIndex" placeholder="10" id="batchEndIndex">
         </div>
+      </div>
     </div>
 
     <div class="form-group" ng-if="settings.advanced">
@@ -45,8 +45,7 @@
       <div class="col-lg-9">
         <div class="checkbox">
           <label>
-            <input type="checkbox" ng-model="config.docker">
-            Allow Docker inside Container
+            <input type="checkbox" ng-model="config.docker"> Allow Docker inside Container
           </label>
         </div>
       </div>

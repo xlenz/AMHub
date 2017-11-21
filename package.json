@@ -16,5 +16,10 @@
     "grunt-contrib-watch": "~0.6",
     "grunt-html2js": "^0.3.5",
     "grunt-ng-annotate": "~1.0"
+  },
+  "standard": {
+    "globals": [
+      "angular"
+    ]
   }
 }

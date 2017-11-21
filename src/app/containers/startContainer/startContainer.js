@@ -4,12 +4,9 @@ angular.module('app.startContainer', [])
   function (Container, ContainerService) {
     this.start = function (containerId, callback) {
       Container.start({ id: containerId }, function () {
-        console.log('Container started.');
-        if (callback) callback();
-        else ContainerService.update();
-      });
+        console.log('Container started.')
+        if (callback) callback()
+        else ContainerService.update()
+      })
     }
   })
-
-  ;
-

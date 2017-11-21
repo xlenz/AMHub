@@ -1,5 +1,6 @@
 <div ng-if="containers.length > 0">
-  <h1 class="header-small"> <i class="fa fa-th"></i>  Containers
+  <h1 class="header-small">
+    <i class="fa fa-th"></i> Containers
     <div class="pull-right">
       <span class="label label-default" title="CPU Load, %" style="font-size: 14px; vertical-align: middle;cursor: default;">{{cpu}}</span>
       <span class="label label-default" title="RAM Total/Free, Mb" style="font-size: 14px; vertical-align: middle;cursor: default;">{{ram}}</span>
@@ -14,7 +15,9 @@
   <div class="panel-heading">
 
     <div class="input-group">
-      <span class="input-group-addon"><i class="fa fa-search"></i></span>
+      <span class="input-group-addon">
+        <i class="fa fa-search"></i>
+      </span>
       <input ng-model="search" class="form-control" placeholder="Containers search for ...">
       <span class="input-group-btn" ng-show="containers.length > viewLimit">
         <button class="btn btn-info" type="button" ng-click="viewLimit=999">Show All</button>
@@ -26,8 +29,7 @@
       <thead>
         <tr>
           <th>
-            <span class="glyphicon glyphicon-check"
-                  ng-click="selectAllContainers(visibleContainers)"></span>
+            <span class="glyphicon glyphicon-check" ng-click="selectAllContainers(visibleContainers)"></span>
           </th>
           <th>Actions</th>
           <th>
@@ -49,19 +51,17 @@
       </thead>
       <tbody>
         <tr ng-repeat="container in visibleContainers = (containers | filter:search | limitTo:viewLimit | orderBy:sort:reverse) track by container.Id"
-        ng-init="name=container.Name" ng-hide="container.Image.startsWith('sha256:')">
+          ng-init="name=container.Name" ng-hide="container.Image.startsWith('sha256:')">
 
           <td>
             <input type="checkbox" ng-model="container.Selected" ng-click="selectContainer(container.Selected, visibleContainers)">
           </td>
 
           <td>
-            <button class="btn btn-success btn-xs" ng-click="startContainer(container.Id)"
-            ng-if="container.Status.indexOf('Up')">
+            <button class="btn btn-success btn-xs" ng-click="startContainer(container.Id)" ng-if="container.Status.indexOf('Up')">
               Start
             </button>
-            <button class="btn btn-warning btn-xs" ng-click="stopContainer(container.Id)"
-            ng-if=" !container.Status.indexOf('Up')">
+            <button class="btn btn-warning btn-xs" ng-click="stopContainer(container.Id)" ng-if=" !container.Status.indexOf('Up')">
               Stop
             </button>
             <button class="btn btn-danger btn-xs" ui-sref="removeContainer({name: name})">
