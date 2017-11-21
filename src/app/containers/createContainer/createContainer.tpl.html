@@ -19,6 +19,11 @@
           ng-trim="false" ng-list="&#10;" rows="9"></textarea>
       </div>
 
+      <label class="col-lg-3 control-label">Volumes</label>
+      <div class="col-lg-9">
+        <input ng-repeat="(vol_k, vol_v) in volumes" type="text" class="form-control" placeholder="{{vol_k}}" ng-model="volumes[vol_k]" ng-value="vol_v">
+      </div>
+
       <div class="col-lg-9">
         <div class="checkbox">
           <label>

@@ -44,7 +44,7 @@ angular.module('app.createContainer', [
       var imageName = decodeURIComponent($stateParams.name)
 
       $scope.settings = Cookies.settings
-      $scope.hostVolumes = []
+      $scope.volumes = {}
       $scope.environmentVariables = []
       var bindingVolumes = []
 
@@ -66,6 +66,9 @@ angular.module('app.createContainer', [
       }, function (image) {
         $scope.image = image
         $scope.environmentVariables = image.Config.Env
+        Object.keys(image.Config.Volumes).forEach(key => {
+          $scope.volumes[key] = ''
+        })
 
         // remove PATH from environment variables. May be a dirty hack
         if ($scope.environmentVariables !== null && $scope.environmentVariables.length > 0 && $scope.environmentVariables[0].indexOf('PATH=') === 0) {
@@ -76,6 +79,7 @@ angular.module('app.createContainer', [
       $scope.env = Env.get({})
 
       $scope.create = function () {
+        bindingVolumes = []
         if (!$scope.createContainerForm.$valid) {
           return
         }
@@ -88,6 +92,13 @@ angular.module('app.createContainer', [
           bindingVolumes.push('/var/run/docker.sock:/var/run/docker.sock')
           bindingVolumes.push($scope.env.DOCKER + ':/bin/docker')
         }
+
+        Object.keys($scope.volumes).forEach(key => {
+          let vol = $scope.volumes[key].trim()
+          if (vol) {
+            bindingVolumes.push(`${vol}:${key}`)
+          }
+        })
 
         Container.create({
           Image: imageName,
