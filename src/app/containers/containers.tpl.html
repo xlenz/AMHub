@@ -1,7 +1,7 @@
-<div ng-if="containers.length > 0">
+<div>
   <h1 class="header-small">
-    <i class="fa fa-th"></i> Containers
-    <div class="pull-right">
+    <i class="fa fa-th"></i> <span class="hide-648">Containers</span>
+    <div class="pull-right" style="margin-top: -5px;">
       <span class="label label-default" title="CPU Load, %" style="font-size: 14px; vertical-align: middle;cursor: default;">{{cpu}}</span>
       <span class="label label-default" title="RAM Total/Free, Mb" style="font-size: 14px; vertical-align: middle;cursor: default;">{{ram}}</span>
       <span class="label label-primary" title="Running Containers" style="font-size: 14px; vertical-align: middle;cursor: default;">Running: {{runningContainers}}</span>
@@ -11,7 +11,7 @@
     </div>
   </h1>
 </div>
-<div class="panel panel-default" ng-if="containers.length > 0">
+<div class="panel panel-default" style="clear: both;">
   <div class="panel-heading">
 
     <div class="input-group">
@@ -19,6 +19,11 @@
         <i class="fa fa-search"></i>
       </span>
       <input ng-model="search" class="form-control" placeholder="Containers search for ...">
+      <span class="input-group-btn" >
+          <button type="button" class="btn" ng-class="toggleUp ? 'btn-success' : 'btn-default'" ng-model="toggleUp" uib-btn-checkbox btn-checkbox-true="1" btn-checkbox-false="0">
+              {{( toggleUp && 'Up' ) || 'All'}}
+          </button>
+        </span>
       <span class="input-group-btn" ng-show="containers.length > viewLimit">
         <button class="btn btn-info" type="button" ng-click="viewLimit=999">Show All</button>
       </span>
@@ -51,7 +56,7 @@
       </thead>
       <tbody>
         <tr ng-repeat="container in visibleContainers = (containers | filter:search | limitTo:viewLimit | orderBy:sort:reverse) track by container.Id"
-          ng-init="name=container.Name" ng-hide="container.Image.startsWith('sha256:')">
+          ng-init="name=container.Name" ng-hide="(toggleUp && container.State!=='running') || container.Image.startsWith('sha256:')">
 
           <td>
             <input type="checkbox" ng-model="container.Selected" ng-click="selectContainer(container.Selected, visibleContainers)">
