@@ -54,27 +54,34 @@ app.get('/', function (req, res) {
   res.redirect('/index.html');
 });
 
-app.post('/cpu', function (req, res) {
-  osUtils.cpuUsage(function(v){
+let cpuUsage = '?'
+let ramUsage = '?'
+
+setInterval(() => {
+  osUtils.cpuUsage(v => {
     try {
-      res.send(Math.floor(v * 100) + '%');
-    } catch(err) {
-      res.send('?');
-    }
+      cpuUsage = Math.floor(v * 100) + '%'
+    } catch(err) { }
   });
+}, 3000)
+
+setInterval(() => {
+  free.m((err, data) => {
+    try {
+      if (err) return
+      let ramTotal = data[0].total;
+      let ramFree = Number(data[0].buffers) + Number(data[0].free);
+      ramUsage = ramTotal + '/' + ramFree;
+    } catch(err) { }
+  });
+}, 5123)
+
+app.post('/cpu', function (req, res) {
+  res.send(cpuUsage)
 });
 
 app.post('/ram', function (req, res) {
-  free.m(function (err, data) {
-    try {
-      if (err) return res.send('?');
-      var ramTotal = data[0].total;
-      var ramFree = Number(data[0].buffers) + Number(data[0].free);
-      res.send(ramTotal + '/' + ramFree);
-    } catch(err) {
-      res.send('?');
-    }
-  });
+  res.send(ramUsage)
 });
 
 server.listen(80, function () {
